@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
-import scipy.ss as ss
+import scipy.stats as ss
 
 def cramer_v( x, y ):
         """
