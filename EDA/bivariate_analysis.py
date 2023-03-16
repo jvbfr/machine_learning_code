@@ -110,27 +110,69 @@ def plot_correlation_matrix(df):
     # Display the plot
     plt.show()
 
-def test_two_proportions(prop1, prop2, n1, n2, alpha=0.05):
+def correlation_detector(data, method = 'pearson'):
     """
-    Perform hypothesis testing to test wether two proportions are statistically different 
+    It detects the dependency between variables 
     
-    Parameters:
-        prop1 (float): The proportion of successes in the first sample.
-        prop2 (float): The proportion of successes in the second sample.
-        n1 (int): The size of the first sample.
-        n2 (int): The size of the second sample.
-        alpha (float): The significance level of the test (default is 0.05).
-    
-    Returns:
-        (result, p_value): A tuple containing the result of the test (True if the null hypothesis is rejected, 
-        False otherwise) and the p-value of the test.
+    Parameters
+    -----------
+    data: pd.DataFrame
+        A dataframe that contains the variables.
+    method: string
+        Type of the correlation, e.g., Pearson, Spearman, inherited from pandas `corr`.
+        
+    Returns
+    ----------
+    result: dict
+        A dict containing the correlation matrix and the number of times that a variable is correlated.
+    Example
+    ------------
+    data = np.random.multivariate_normal([0, 3, 1], np.array([[6, 5, 3], 
+                                                              [5, 6, 2],
+                                                              [3, 2, 8]
+                                                             ]), 200)
+    data = pd.DataFrame(data, columns = ['var' + str(i) for i in range(data.shape[1])])
+    correlation_detector(data)
     """
-    p = (prop1*n1 + prop2*n2) / (n1 + n2)
-    z_score = (prop1 - prop2) / np.sqrt(p*(1-p)*(1/n1 + 1/n2))
-    p_value = 2 * (1 - ss.norm.cdf(abs(z_score)))
-    result = p_value < alpha
-    
-    return (result, p_value)
+    correlation_matrix = data.corr(method = method)
+    result = {'correlation_matrix': correlation_matrix}
+        
+    perfect_negative, perfect_positive = [], []
+    strong_negative, strong_positive = [], []
+    moderate_negative, moderate_positive = [], []
+    uncorrelated = []
+
+    correlation_levels = [-1, -0.8, -0.6, 0, 0.6, 0.8, 1]        
+    for i in correlation_levels:
+        pn = (correlation_matrix < -0.8).sum(axis = 1) - 1
+        sn = ((correlation_matrix >= -0.8) & (correlation_matrix < -0.6)).sum(axis = 1)
+        mn = ((correlation_matrix >= -0.6) & (correlation_matrix < -0.3)).sum(axis = 1)
+        uc = ((correlation_matrix >= -0.3) & (correlation_matrix < 0.3)).sum(axis = 1)
+        mp = ((correlation_matrix >= 0.3) & (correlation_matrix < 0.6)).sum(axis = 1)
+        sp = ((correlation_matrix >= 0.6) & (correlation_matrix < 0.8)).sum(axis = 1)
+        pp = (correlation_matrix >= 0.8).sum(axis = 1) - 1
+
+        perfect_negative.append(pn.tolist())
+        strong_negative.append(sn.tolist())
+        moderate_negative.append(mn.tolist())
+        uncorrelated.append(uc.tolist())            
+        moderate_positive.append(mp.tolist())            
+        strong_positive.append(sp.tolist())            
+        perfect_positive.append(pp.tolist())  
+        break
+
+    total_correlation = np.array([perfect_negative, strong_negative, moderate_negative,
+                                  uncorrelated, moderate_positive, strong_positive, 
+                                  perfect_positive]).reshape((7, data.shape[1]))
+    total_correlation = pd.DataFrame(total_correlation, 
+                                     columns = data.columns, 
+                                     index = ['perfect_negative', 'strong_negative',
+                                              'moderate_negative', 'uncorrelated',
+                                              'moderate_positive', 'strong_positive',
+                                              'perfect_positive']).T
+    total_correlation = total_correlation.replace(-1, 0)
+    result['total_correlation'] = total_correlation
+    return result
 
 
 def plot_scatter(df, x_col, y_col):
