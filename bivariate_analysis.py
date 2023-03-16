@@ -112,7 +112,7 @@ def plot_correlation_matrix(df):
 
 def test_two_proportions(prop1, prop2, n1, n2, alpha=0.05):
     """
-    Perform hypothesis testing to test if two proportions are statistically different or not.
+    Perform hypothesis testing to test wether two proportions are statistically different 
     
     Parameters:
         prop1 (float): The proportion of successes in the first sample.
