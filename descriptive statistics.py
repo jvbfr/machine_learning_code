@@ -42,14 +42,21 @@ def get_summary(data):
     d5 = pd.DataFrame(numerical_attributes.apply(lambda x: x.skew())).T 
     d6 = pd.DataFrame(numerical_attributes.apply(lambda x: x.kurtosis())).T
     d7 = pd.DataFrame(numerical_attributes.apply(lambda x: np.quantile(x, 0.25))).T
-    d8 = pd.DataFrame(numerical_attributes.apply(lambda x: np.quantile(x, 0.50))).T
     d9 = pd.DataFrame(numerical_attributes.apply(lambda x: np.quantile(x, 0.75))).T
     d10 = pd.DataFrame(numerical_attributes.apply(lambda x: np.quantile(x, 0.75) - np.quantile(x, 0.25))).T
 
     # concatenate
-    m = pd.concat([d2, d3, d4, d7, d8, d9, d10, ct1, ct2, d1, d5, d6]).T.reset_index()
-    m.columns = ['attributes', 'min', 'max', 'range', 'Q1', 'median', 'Q3', 'IQR', 'mean', 'std', 'skew', 'kurtosis']
+    m = pd.concat([d2, d3, d4, d7, ct2, d9, d10, ct1, d1, d5, d6]).T
+    m.columns = ['min', 'max', 'range', 'Q1', 'median', 'Q3', 'IQR', 'mean', 'std', 'skew', 'kurtosis']
 
     return m
+
+def main_view(data):
+
+    shape = data.shape
+    nans = data.isna().mean()
+    stats = get_summary(data)
+
+    return shape, nans, stats
 
 
