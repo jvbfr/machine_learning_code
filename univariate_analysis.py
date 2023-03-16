@@ -93,9 +93,9 @@ def plot_boxplot(df, vars_to_plot):
     sns.despine(offset=10, trim=True)
 
 
-def plot_main_graphs(df, variable):
-        """
-    Plot the distribution of a given variable in a dataframe using barplot, boxplot, and KDE plot.
+def plot_barplot(df, variable, rotation = 0, hue = None):
+    """
+    Plot the countplot of a given variable in a dataframe 
 
     Parameters:
     -----------
@@ -103,6 +103,10 @@ def plot_main_graphs(df, variable):
         The dataframe containing the variable to be plotted.
     variable : str
         The name of the variable in the dataframe that needs to be plotted.
+    rotation: int
+        Optional to rotate x-axes in given degrees
+    hue: str
+        Optional variable to segregate bars in categories of a given variable
 
     Returns:
     --------
@@ -111,20 +115,16 @@ def plot_main_graphs(df, variable):
     """
     # Plotting barplot
     plt.figure(figsize=(10, 5))
-    sns.countplot(x=variable, data=df)
-    plt.title(f"Distribution of {variable}")
-    plt.show()
+    ax = sns.countplot(
+        x=variable,
+        data=df, 
+        hue = hue,
+        order = df[variable].value_counts().index
+    )
 
-    # Plotting boxplot
-    plt.figure(figsize=(10, 5))
-    sns.boxplot(x=variable, data=df)
-    plt.title(f"Boxplot of {variable}")
-    plt.show()
-
-    # Plotting KDE plot
-    plt.figure(figsize=(10, 5))
-    sns.kdeplot(df[variable], shade=True)
-    plt.title(f"Density plot of {variable}")
+    ax.bar_label(ax.containers[0])
+    plt.title(f"Barplot of {variable}")
+    plt.xticks(rotation= rotation)
     plt.show()
 
 def plot_cdf(data, variable):
