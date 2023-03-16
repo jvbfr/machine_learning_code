@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def get_summary(numerical_attributes):
+def get_summary(data):
     """
     Generates a summary of numerical attributes in a pandas DataFrame. The summary includes:
 
@@ -20,15 +20,16 @@ def get_summary(numerical_attributes):
 
     Parameters:
     -----------
-    numerical_attributes: pandas DataFrame
-        The DataFrame containing the numerical attributes
+    data: pandas DataFrame
+        The DataFrame containing features
 
     Returns:
     --------
     summary: pandas DataFrame
         The summary of numerical attributes
     """
-    
+
+    numerical_attributes = data.select_dtypes( include = [ 'int64', 'float64'] )
     # Central Tendency - mean, median
     ct1 = pd.DataFrame(numerical_attributes.apply(np.mean)).T
     ct2 = pd.DataFrame(numerical_attributes.apply(np.median)).T
