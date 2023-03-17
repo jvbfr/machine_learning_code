@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import missingno as msno
 
 def get_summary(data):
     """
@@ -58,5 +59,8 @@ def main_view(data):
     stats = get_summary(data)
 
     return shape, nans, stats
+
+def visualize_nan_values(data):
+    msno.bar(data)
 
 
