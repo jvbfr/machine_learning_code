@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def plot_all_df_distributions(df, num_bins=30):
+def plot_all_df_distributions(data, num_bins=30):
     """
     Plot the distribution of variables in a pandas DataFrame using Matplotlib.
 
@@ -16,6 +16,8 @@ def plot_all_df_distributions(df, num_bins=30):
     --------
     None
     """
+    
+    df = data.select_dtypes( include = [ 'int64', 'float64'] )
     # Iterate over columns and create histograms
     for col in df.columns:
         fig, ax = plt.subplots()
