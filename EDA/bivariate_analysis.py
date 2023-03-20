@@ -175,7 +175,7 @@ def correlation_detector(data, method = 'pearson'):
     return result
 
 
-def plot_scatter(df, x_col, y_col):
+def plot_scatter(df, x_col, y_col, hue = None):
     """
     Visualize the relationship between two numerical variables in a dataframe using a scatter plot.
 
@@ -183,11 +183,12 @@ def plot_scatter(df, x_col, y_col):
     df (pandas.DataFrame): The dataframe containing the data to plot.
     x_col (str): The name of the column containing the x-axis variable.
     y_col (str): The name of the column containing the y-axis variable.
+    hue (str)
 
     Returns:
     None
     """
-    sns.scatterplot(x=x_col, y=y_col, data=df)
+    sns.scatterplot(x=x_col, y=y_col, hue = hue, data=df)
 
 
 def plot_polynomial(df, x_col, y_col, order=2):
